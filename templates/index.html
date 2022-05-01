@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html >
+<!--From https://codepen.io/frytyler/pen/EGdtg-->
+<head>
+  <meta charset="UTF-8">
+  <title>Disease Prediction</title>
+  <link href='https://fonts.googleapis.com/css?family=Pacifico' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Hind:300' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.10/css/bootstrap-select.css">
+  <style>
+    .bootstrap-select{
+      width: 300px !important;
+      height: 100%;
+    }
+    #submit{
+      margin-left: 10px;
+    }
+  </style>
+</head>
+
+<body style="background: url('{{url_for('static', filename='last.jpg')}}'); background-size:100% 100%; background-repeat:no-repeat;" >
+ <div class="login" style="position: absolute;">
+  <br>
+  <br>
+  <br>
+  <br>
+	<h1>Virtual  Doctor</h1>
+  <br>
+  <center><p style="color: #fff;" > Please select the symptoms</p></center>
+
+  <form class="form-inline" action="{{ url_for('predict')}}"method="post">
+    <select id="symptoms" name="selected" class="selectpicker form-control" multiple data-live-search="true"></select>
+    <button type="submit" class="btn btn-primary" id="submit">Predict</button>
+  </form>
+        <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.10/js/bootstrap-select.min.js"></script>
+        <script>
+            var diseasesData={"0":{"0":"Itching","1":"Skin rash","2":"Nodal skin eruptions","3":"Continuous sneezing","4":"Shivering","5":"Chills","6":"Joint pain","7":"Stomach pain","8":"Acidity","9":"Ulcers on tongue","10":"Muscle wasting","11":"Vomiting","12":"Burning micturition","13":"Spotting  urination","14":"Fatigue","15":"Weight gain","16":"Anxiety","17":"Cold hands and feets","18":"Mood swings","19":"Weight loss","20":"Restlessness","21":"Lethargy","22":"Patches in throat","23":"Irregular sugar level","24":"Cough","25":"High fever","26":"Sunken eyes","27":"Breathlessness","28":"Sweating","29":"Dehydration","30":"Indigestion","31":"Headache","32":"Yellowish skin","33":"Dark urine","34":"Nausea","35":"Loss of appetite","36":"Pain behind the eyes","37":"Back pain","38":"Constipation","39":"Abdominal pain","40":"Diarrhoea","41":"Mild fever","42":"Yellow urine","43":"Yellowing of eyes","44":"Acute liver failure","45":"Fluid overload","46":"Swelling of stomach","47":"Swelled lymph nodes","48":"Malaise","49":"Blurred and distorted vision","50":"Phlegm","51":"Throat irritation","52":"Redness of eyes","53":"Sinus pressure","54":"Runny nose","55":"Congestion","56":"Chest pain","57":"Weakness in limbs","58":"Fast heart rate","59":"Pain during bowel movements","60":"Pain in anal region","61":"Bloody stool","62":"Irritation in anus","63":"Neck pain","64":"Dizziness","65":"Cramps","66":"Bruising","67":"Obesity","68":"Swollen legs","69":"Swollen blood vessels","70":"Puffy face and eyes","71":"Enlarged thyroid","72":"Brittle nails","73":"Swollen extremeties","74":"Excessive hunger","75":"Extra marital contacts","76":"Drying and tingling lips","77":"Slurred speech","78":"Knee pain","79":"Hip joint pain","80":"Muscle weakness","81":"Stiff neck","82":"Swelling joints","83":"Movement stiffness","84":"Spinning movements","85":"Loss of balance","86":"Unsteadiness","87":"Weakness of one body side","88":"Loss of smell","89":"Bladder discomfort","90":"Foul smell of urine","91":"Continuous feel of urine","92":"Passage of gases","93":"Internal itching","94":"Toxic look (typhos)","95":"Depression","96":"Irritability","97":"Muscle pain","98":"Altered sensorium","99":"Red spots over body","100":"Belly pain","101":"Abnormal menstruation","102":"Dischromic  patches","103":"Watering from eyes","104":"Increased appetite","105":"Polyuria","106":"Family history","107":"Mucoid sputum","108":"Rusty sputum","109":"Lack of concentration","110":"Visual disturbances","111":"Receiving blood transfusion","112":"Receiving unsterile injections","113":"Coma","114":"Stomach bleeding","115":"Distention of abdomen","116":"History of alcohol consumption","117":"Fluid overload.1","118":"Blood in sputum","119":"Prominent veins on calf","120":"Palpitations","121":"Painful walking","122":"Pus filled pimples","123":"Blackheads","124":"Scurring","125":"Skin peeling","126":"Silver like dusting","127":"Small dents in nails","128":"Inflammatory nails","129":"Blister","130":"Red sore around nose","131":"Yellow crust ooze"}}
+              diseasesData=diseasesData[0];
+              var diseasesList=[];
+              var selected=[];
+              for(var i=0;i<131;i++){
+                diseasesList.push(diseasesData[i]);
+                }
+               var selectedSymptoms=[];
+               d3.select("#symptoms")  
+               .selectAll("option")
+               .data(diseasesList)
+               .enter()
+               .append("option")
+               .text(function (option) {
+                 return option;
+                 });
+               $('.selectpicker').selectpicker('refresh');
+               d3.select('#symptoms').on('change',function(){
+                selected=[];
+                var brands = $('#symptoms option:selected');
+                $(brands).each(function(index, brand){
+                  selected.push($(this).val());
+                  });
+                });
+        </script>
+   <br>
+   <span id='prediction_text' style="color: #fff;"><strong>{{ prediction_text }}</strong></span>   
+ </div>
+<script>
+  var text=$('#prediction_text').text();
+  if(text){
+       text=text.split('[');
+        text=text[1];
+        text=text.split(']');
+        text=text[0];
+        text=text.split("'");
+        text=text[1]; 
+        $('#prediction_text').html('<font size="+1">'+'The predicted disease for the given symptoms is'+' '+'<strong>'+text+'</strong>'+'</font>')
+  }
+ 
+</script>
+</body>
+</html>
